@@ -1,0 +1,10 @@
+/* html {
+    filter: invert(1) hue-rotate(90deg);
+} */
+/* Default colors */
+@media (prefers-color-scheme: dark) 
+{
+    body {
+        background-color: #111;
+    }
+}

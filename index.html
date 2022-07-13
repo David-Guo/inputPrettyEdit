@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>abi在线解析工具</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./index.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">uint256编码成16进制</div>
+        <div class="panel-body">
+          
+          <div class="row">
+            <div class="col-lg-4">
+                <input id="orginData" type="text" class="form-control" placeholder="输入10进制数数据">
+            </div><!-- /.col-lg-3 -->
+            <div class="col-lg-2">
+              <div class="input-group">
+                <input id="decimal" type="text" class="form-control" value="18" placeholder="输入精度">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" id="mulDec">精度转换！</button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-3 -->
+            <div class="col-lg-6">
+              <div class="input-group">
+                <input id="decimalData" type="text" class="form-control" placeholder="带精度的10进制数据">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" id="decode">16进制编码！</button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+          </div><!-- /.row -->
+
+          <div class="row">
+            <text id="decode-output">
+          <!-- 00000000000000000000000000000000000000000000000006f05b59d3b20000 -->
+          </text>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">16进制转10进制</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-5">
+                <input id="hexData" type="text" class="form-control" placeholder="输入16进制数数据">
+            </div><!-- /.col-lg-3 -->
+            <div class="col-lg-2">
+              <div class="input-group">
+                <input id="decimal2" type="text" class="form-control" value="18" placeholder="输入精度">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" id="decodeHex">精度转换！</button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-3 -->
+            <div class="col-lg-5">
+                <input id="decimalData2" type="text" class="form-control" placeholder="带精度的10进制数据">
+            </div><!-- /.col-lg-6 -->
+          </div><!-- /.row -->
+
+          <div class="row">
+            <text id="decode-output">
+          <!-- 00000000000000000000000000000000000000000000000006f05b59d3b20000 -->
+          </text>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">输入inputdata</div>
+        <div class="panel-body">
+          <div class="input-group">
+            <span class="input-group-addon" id="basic-addon3"
+              >0x开头带funSign</span
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="inputdata"
+              aria-describedby="basic-addon3"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">Pretty Show</div>
+        <div class="panel-body">
+          <div class="show-group" id="show-group">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">修改后的数据</div>
+        <div class="panel-body">
+          <div class="output">
+            <text id="text-output"
+              style="
+                width: 400px;
+                height: auto;
+                word-wrap: break-word;
+                word-break: break-all;
+                overflow: hidden;
+              "
+            >
+              <!-- 0x6add033e000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000919c2aed4a12054ba33c771928e0b600abf0a285000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000006f05b59d3b20000 -->
+            </text>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script type="module">
+      import { ethers } from "./ethers-5.6.esm.min.js";
+      // Your code here...
+
+      $('#hexData').on("input propertychange", function (event) {
+        $('#decodeHex').click();
+      })
+
+      $('#decimal2').on("input propertychange", function (event) {
+        $('#decodeHex').click();
+      })
+
+      $('#decodeHex').on("click", () => {
+        let hexData = $('#hexData').val();
+        if (hexData.indexOf('0x') != -1 ) {
+          hexData = hexData.slice(2);
+        }
+        let decimal = $('#decimal2').val();
+        let decimalData2 = ethers.utils.formatUnits(ethers.BigNumber.from('0x'+hexData), decimal);
+        $('#decimalData2').val(decimalData2);
+      })
+
+      
+      $('#orginData').on("input propertychange", function (event) {
+        $('#mulDec').click();
+        $('#decode').click();
+      })
+
+      $('#decimal').on("input propertychange", function (event) {
+        $('#mulDec').click();
+        $('#decode').click();
+      })
+
+      // 点击事件
+      $("#mulDec").on("click", () => {
+        let orginData = $('#orginData').val().replace(/,/g, '');
+        let decimal = $('#decimal').val();
+        let decimalData = ethers.utils.parseUnits(orginData, parseInt(decimal));
+        $('#decimalData').val(decimalData.toString());
+      })
+
+      $('#decode').on("click", () => {
+        let decimalData = $('#decimalData').val();
+        let hexData = ethers.utils.defaultAbiCoder.encode(['uint256'], [decimalData]);
+        $('#decode-output').text(hexData.slice(2));
+      })
+
+
+    </script>
+
+
+    <script>
+      var funSign;
+      var outputData = '';
+
+      $("#inputdata").on("input propertychange", function (event) {
+        let inputdata = $("#inputdata").val();
+        funSign = inputdata.slice(0, 10);
+        let hexData = inputdata.slice(10);
+
+        let form = $("#show-group");
+        form.empty();
+        let lable = $(`<label>函数签名: ${funSign}</label>`);
+        form.append(lable);
+
+        for (let i = 0, l = hexData.length; i < l / 64; i++) {
+          let item = hexData.slice(64 * i, 64 * (i + 1));
+          var input = $(
+            "<input type='text' class='form-control number' id='gen-input'>"
+          );
+          input.val(item.toString());
+          input.on("input propertychange", changeFunc);
+          form.append(input);
+        }
+
+        $('#text-output').text(inputdata);
+      });
+      
+      let changeFunc = () => {
+        outputData = '' + funSign;
+        $('#show-group').children().each(function (i, n) {
+          if(n.value) {
+            outputData = outputData + n.value;
+          }
+        })
+        $('#text-output').text(outputData);
+      }
+    </script>
+  </body>
+</html>
