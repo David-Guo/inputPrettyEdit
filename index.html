@@ -102,7 +102,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">Pretty Show</div>
         <div class="panel-body">
+          <pre>
           <div class="show-group" id="show-group">
+          </pre>
           </div>
         </div>
       </div>
@@ -188,6 +190,18 @@
     <script>
       var funSign;
       var outputData = '';
+      function dec2hex(dec, len) {//10进制转16进制补0
+        var hex = "";
+        while( dec ) {
+        var last = dec & 15;
+        hex = String.fromCharCode(((last>9)?55:48)+last) + hex;
+        dec >>= 4;
+        }
+        if(len) {
+        while(hex.length < len) hex = '0' + hex;
+        }
+        return hex;
+      }
 
       $("#inputdata").on("input propertychange", function (event) {
         let inputdata = $("#inputdata").val();
@@ -201,12 +215,17 @@
 
         for (let i = 0, l = hexData.length; i < l / 64; i++) {
           let item = hexData.slice(64 * i, 64 * (i + 1));
+          let div = $(`<div class="input-group"> </div>`);
+          var span = $(`<span class="input-group-addon" id="basic-addon3">[0x${dec2hex(i*32, 3)}]: </span>`)
+          // span.val(`[0x${(i*64).toString(16)}]: `)
+          div.append(span);
           var input = $(
             "<input type='text' class='form-control number' id='gen-input'>"
           );
           input.val(item.toString());
           input.on("input propertychange", changeFunc);
-          form.append(input);
+          div.append(input);
+          form.append(div);
         }
 
         $('#text-output').text(inputdata);

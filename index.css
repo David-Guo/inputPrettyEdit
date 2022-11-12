@@ -7,4 +7,9 @@
     body {
         background-color: #111;
     }
+    html {
+        font-family: monospace;
+        font-variant-numeric: tabular-nums;
+    }
+
 }
