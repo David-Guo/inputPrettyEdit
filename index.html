@@ -210,7 +210,7 @@
 
         let form = $("#show-group");
         form.empty();
-        let lable = $(`<label>函数签名: ${funSign}</label>`);
+        let lable = $(`<label id="lable-show-group">函数签名: ${funSign}</label>`);
         form.append(lable);
 
         for (let i = 0, l = hexData.length; i < l / 64; i++) {
@@ -220,7 +220,7 @@
           // span.val(`[0x${(i*64).toString(16)}]: `)
           div.append(span);
           var input = $(
-            "<input type='text' class='form-control number' id='gen-input'>"
+            "<input type='text' class='form-control number' name='gen-input'>"
           );
           input.val(item.toString());
           input.on("input propertychange", changeFunc);
@@ -233,11 +233,12 @@
       
       let changeFunc = () => {
         outputData = '' + funSign;
-        $('#show-group').children().each(function (i, n) {
-          if(n.value) {
-            outputData = outputData + n.value;
-          }
-        })
+        let inputs = $("input[name='gen-input']");
+
+        for( var i = 0; i < inputs.length; i++){
+          outputData = outputData + inputs[i].value;
+        }
+        
         $('#text-output').text(outputData);
       }
     </script>
