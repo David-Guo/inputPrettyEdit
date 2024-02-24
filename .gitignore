@@ -1,1 +1,34 @@
-.vs
+# Logs
+logs
+*.log
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build output
+dist/
+build/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Compiled output
+*.min.js
+*.min.css
+
+# Testing
+/coverage
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
